@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block a %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SocialSkill</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock %}
+</head>
+
+<body>
+    {% block b %}
+    <div class="ad" style="position: relative; color:whitesmoke">
+        <img src="../media/images/jeremy-bishop-QHZn3-0bbEM-unsplash.jpg" alt="Advertisement" class="w-100" style="opacity: 1; filter:saturate(150%); filter: brightness(80%);">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <div id="wrapper" class="lg:p-12  mx-auto p-6 space-y- text-center flex flex-col justify-between h-screen col-sm-12">
+                <div class="lg:p-12 max-w-md max-w-xl lg:my-0 my-12 mx-auto p-6 space-y-" >
+                    <span class="text-md m-3 p-3 font-semibold" style="font-size: 26px;">Sign Up</span>
+                    
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="flex lg:flex-row flex-col lg:space-x-2">
+                            <input type="text" placeholder="First Name"  class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
+                            <input type="text" placeholder="Last Name" class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;"> 
+                        </div>
+                        <div class="flex lg:flex-row flex-col lg:space-x-2">
+                        <input type="text" name="username" placeholder="Username" class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
+                        <input type="email" name="email" placeholder="Email" class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
+                        </div>
+                        <div class="flex lg:flex-row flex-col lg:space-x-2">
+                        <input type="password" name="password" placeholder="Password" class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
+                        <input type="password" name="password2" placeholder="Confirm Password" class="bg-gray-200 mb-2 shadow-none  dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
+                        </div>
+                        <div class="flex justify-start my-4 space-x-1">
+                            <div class="checkbox">
+                                <input type="checkbox" id="chekcbox1" checked>
+                                <label for="checkbox1"><span class="checkbox-icon"></span> I Agree</label>
+                            </div>
+                            <a href="#"> Terms and Conditions</a>
+                        </div>
+                        <button type="submit" class="btn btn-light shadow-sm my_button" style="color: white; background-image: linear-gradient(to right, #48e892, #2de5e5);" onmouseover="this.style.backgroundImage = 'linear-gradient(to right, #f09c7a, #f765a5)'" onmouseout="this.style.backgroundImage = 'linear-gradient(to right, #48e892, #2de5e5)'">Sign Up</button>
+                        <div class="text-center mt-5 space-x-2">
+                            <p class="text-base"> Do you have an account? <a href="/signin"> Login </a></p>
+                        </div>
+                    </form>
+
+                </div>
+            
+        </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

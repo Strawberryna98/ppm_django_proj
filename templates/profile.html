@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{% block a %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Profile - {{user_profile.user.username}}</title>
+	{% endblock %}
+</head>
+<body>
+{% block b %}
+	<!--carico tutto il contenuto del profilo-->
+	<div class="container">
+		<div class="row border-2" style="border-color: #2de5e5;">
+			<div class="col-sm-3">
+				<div class="card mb-2 border-1 rounded-circle shadow" style="border-color: #2de5e5; width: 200px; height: 200px; overflow: hidden;">
+					<img src="{{ user_profile.profileimg.url }}" class="card-img-top rounded-circle m-0 p-0" alt="Profile Image" style="object-fit: cover; width: 100%; height: 100%;">
+				</div>
+			</div>
+			<div class=" col-sm-9 card-body justify-content-center border-1" style="border-color: #2de5e5;">
+					  <h3 class="card-title" style="font-size: large; ">{{ user_profile.user.username }}</h3>
+					  <p class="card-text" style="font-size: medium; ">{{ user_profile.bio }}</p>
+					  <!-- form OK -->
+					  <form action="/follow" method="POST" class="d-flex row m-0 p-0">
+							{% csrf_token %}
+							<div class="add-btn">
+								<span>{{user_profile.user.username}}'s posts:</span>
+								{% if user_post_length == 0 %}
+								<span style="color: black; font-size: 14px;"><b>No Post</b></span>
+								{% elif user_post_length == 1 %}
+								<span style="color: black; font-size: 14px;"><b>{{user_post_length}} Post</b></span>
+								{% else %}
+								<span style="color: black; font-size: 14px;"><b>{{user_post_length}} Posts</b></span>
+								{% endif %}
+								<span>{{user_profile.user.username}}'s followers: </span>
+								{% if user_followers == 0 or user_followers == 1 %}
+								<span style="color: black; font-size: 14px;"><b>{{user_followers}} follower</b></span>
+								{% else %}
+								<span style="color: black; font-size: 14px;"><b>{{user_followers}} followers</b></span>
+								{% endif %}
+								<span>{{user_profile.user.username}} is following: </span>
+								<span style="color: black; font-size: 14px;"><b>{{user_following}} </b></span>
+								<span>accounts </span>
+								<input type="hidden" value="{{user.username}}" name="follower" />
+								<input type="hidden" value="{{user_object.username}}" name="user" />
+							</div>
+							<div>
+							<a data-ripple="" class="ml-3"><button id='followButton' type="submit" class="btn btn-light shadow-sm my_button" style="background-image: linear-gradient(to right, #48e892, #2de5e5); color:white;" onmouseover="this.style.backgroundImage = 'linear-gradient(to right, #f09c7a, #f765a5)'" onmouseout="this.style.backgroundImage = 'linear-gradient(to right, #48e892, #2de5e5)'">
+								{{button_text}}</button>
+								</a>
+								<script>
+									document.addEventListener('DOMContentLoaded', function() {
+									const followButton = document.getElementById('followButton');
+		
+									followButton.addEventListener('mouseover', function() {
+										followButton.classList.add('highlight');
+									});
+		
+									followButton.addEventListener('mouseout', function() {
+										followButton.classList.remove('highlight');
+									});
+									});
+								</script>
+								</div>
+						</form>
+						
+			</div>
+				  
+		</div>
+	</div>
+<!-- OK posts e likes -->
+<div class="container">
+	<div class="row">
+		<!-- Colonna dei post -->
+		<div class="col-sm-9">
+		<section>
+			<!-- Ok mostra i post -->
+			<span style="font-size: large; font-weight: bold;">Posts by {{ user_profile.user.username }}</span>
+			{% for post in user_posts %}
+			<div class="card mb-3 border-1 rounded-sm m-1 shadow" style="border-color:#2de5e5;">
+				<img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+				<div class="card-body col-sm-12">
+					<h5 class="card-title">{{ post.caption }}</h5>
+					<p class="card-text">Posted on {{ post.created_at }}</p>
+					<p class="card-text">Number of likes: <span id="likes_count_{{ post.id }}">{{ post.no_of_likes }}</span></p>
+					<!-- OK mi piace -->
+					<form id="like_form_{{ post.id }}" action="{% url 'like-post' %}" method="POST" class="like-form text-right">
+						{% csrf_token %}
+						<input type="hidden" value="{{ post.id }}" name="post_id" />
+						<button type="submit" class="btn btn-light shadow-sm my_button" style="color: white; background-image: linear-gradient(to right, #48e892, #2de5e5);" onmouseover="this.style.backgroundImage = 'linear-gradient(to right, #f09c7a, #f765a5)'" onmouseout="this.style.backgroundImage = 'linear-gradient(to right, #48e892, #2de5e5)'">
+							<img src="../media/images/cuore.png" style="width: 20px; height: 20px; margin-right: 5px; margin-bottom: 3px;"/>
+							Like</button>
+					</form>
+				</div>
+			</div>
+			{% empty %}
+			<p>No posts available.</p>
+			{% endfor %}
+
+			<!-- OK mi piace -->
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<script>
+			$(document).ready(function() {
+			$(".like-form").on("submit", function(e) {
+				e.preventDefault(); // Evita il comportamento di default del form
+				var form = $(this);
+				var post_id = form.find("input[name='post_id']").val();
+
+				// Invia la richiesta AJAX
+				$.ajax({
+				type: "POST",
+				url: form.attr("action"),
+				data: form.serialize(),
+				success: function(response) {
+					// Aggiorna il conteggio dei like
+					var likes_count = $("#likes_count_" + post_id);
+					var current_likes = parseInt(likes_count.text());
+					var new_likes = response.likes_count;
+					likes_count.text(new_likes);
+
+					// Aggiorna l'aspetto del pulsante di mi piace
+					var like_button = form.find("button");
+					if (response.liked) {
+					like_button.addClass("liked");
+					like_button.text("Unlike");
+					} else {
+					like_button.removeClass("liked");
+					like_button.text("Like");
+					}
+				},
+				error: function(xhr) {
+					console.log(xhr.responseText);
+				}
+				});
+			});
+
+			// Funzione per gestire il click sul pulsante di mi piace/unlike
+			$(document).on("click", ".like-form button", function() {
+				var form = $(this).closest("form");
+				form.submit();
+			});
+			});
+			</script>
+		</section>
+		</div>
+		<!-- Colonna dei followers -->
+		<div class="col-sm-3">
+			<span style="color: black; font-size: large;"><b>Followers list</b></span>
+			{% for follower in user_followers_list %}
+			<div class="d-flex justify-content-center" >
+				<div class="card mb-2 border-1 rounded-circle shadow" style="border-color: #2de5e5; width: 100px; height: 100px; overflow: hidden;" onmouseover="this.style.transform = 'scale(1.05)'; this.style.borderColor = '#f09c7a';" onmouseout="this.style.transform = ''; this.style.borderColor = '#2de5e5';">
+					<img src="{{ follower.follower.profile.profileimg.url }}" class="card-img-top rounded-circle m-0 p-0" alt="Profile Image" style="object-fit: cover; width: 100%; height: 100%;">
+		
+				</div>
+				<div class="card-body">
+					<a href="{% url 'profile' follower.follower %}" class="card-title" style="color: black; font-size: medium;"><b>{{ follower.follower}}</b></a>
+					<p>{{follower.user.location}}</p>
+				</div>
+			</div>
+			{% endfor %}
+			<span style="color: black; font-size: large;"><b>Following's list</b></span>
+			{% for follower in user_following_list %}
+			<div class="d-flex justify-content-center">
+				<div class="card mb-2 border-1 rounded-circle shadow" style="border-color: #2de5e5; width: 100px; height: 100px; overflow: hidden;" onmouseover="this.style.transform = 'scale(1.05)'; this.style.borderColor = '#f09c7a';" onmouseout="this.style.transform = ''; this.style.borderColor = '#2de5e5';">
+					<img src="{{ follower.user.profile.profileimg.url }}" class="card-img-top rounded-circle m-0 p-0" alt="Profile Image" style="object-fit: cover; width: 100%; height: 100%;">	
+				</div>
+				<div class="card-body">
+					<a href="{% url 'profile' follower.user %}" class="card-title" style="color: black; font-size: medium;"><b>{{ follower.user }}</b></a>
+					<p>{{follower.user.location}}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	
+</div>
+</div>
+{% endblock %}
+</body>	
+</html>
