@@ -110,7 +110,8 @@ venv.bak/
 
 # mypy 
 .mypy_cache/ 
-# change: .ppm_django_project/settings.py
+# change: 
+.ppm_django_project/settings.py
 # Sublime Text # 
 *.tmlanguage.cache 
 *.tmPreferences.cache 
