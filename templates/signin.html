@@ -40,7 +40,7 @@
                         
                         <form action="/signin" method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <!--<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">-->
                             <!--<input type="hidden" name="user_id" value="{{ request.user.id }}">-->
                             <input type="text" name="username" placeholder="Username" class="bg-gray-200 mb-2 shadow-none dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
                             <input type="password" name="password" placeholder="Password" class="bg-gray-200 mb-2 shadow-none dark:bg-gray-800" style="border: 1px solid #d3d5d8 !important; font-style: italic; color:lightgray; font-size: small;">
