@@ -27,10 +27,7 @@ MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #print(f"MY_SECRET_KEY: {os.getenv('MY_SECRET_KEY')}")
-#SECRET_KEY = os.getenv('MY_SECRET_KEY')
-MY_SECRET_KEY="django-insecure-b6_q3t44++95-emsrl*qo$&h69d3t(i7e*29#s-pcf90efzv1m"
-
-
+SECRET_KEY = os.getenv('MY_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
